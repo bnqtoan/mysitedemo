@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài giảng: Làm Chủ Tư Duy Trong Kỷ Nguyên AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Swiper.js for Slideshow -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --swiper-theme-color: #3b82f6;
+        }
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: #f8fafc;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .api-key-bar {
+            background-color: #eef2ff;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        #api-key-input {
+            border: 1px solid #c7d2fe;
+            border-radius: 0.375rem;
+            padding: 0.25rem 0.5rem;
+            min-width: 300px;
+        }
+        .swiper-container {
+            width: 100%;
+            height: 100%; /* Take remaining height */
+        }
+        .swiper-slide {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2.5rem;
+            box-sizing: border-box;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+        .slide-content {
+            max-width: 1000px;
+            width: 100%;
+        }
+        .slide-title {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: #1e293b;
+        }
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: #475569;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        .nav-button {
+            color: #3b82f6;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .slide-img {
+            border-radius: 1rem;
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.15);
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            max-height: 500px;
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: scale(1);
+        }
+        .loader {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .gemini-btn {
+            background-color: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #3b82f6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+        .gemini-btn:hover {
+            background-color: rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="api-key-bar">
+        <label for="api-key-input" class="font-semibold text-indigo-800">Google AI API Key:</label>
+        <input type="password" id="api-key-input" placeholder="Điền API Key của bạn vào đây">
+        <span class="text-sm text-indigo-600">API Key chỉ được lưu trên trình duyệt của bạn.</span>
+    </div>
+
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <!-- Slide 1: Title -->
+            <div class="swiper-slide">
+                <div class="slide-content text-center">
+                    <h1 class="slide-title mb-4">Làm Chủ Tư Duy Trong <br><span class="gradient-text">Kỷ Nguyên AI</span></h1>
+                    <p class="slide-subtitle">Chìa Khóa Thành Công Của Tương Lai</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: Introduction -->
+            <div class="swiper-slide">
+                <div class="slide-content text-center">
+                    <h2 class="text-3xl font-bold mb-8">Điều gì là quan trọng nhất để thành công trong tương lai?</h2>
+                    <div class="grid md:grid-cols-2 gap-8 text-left">
+                        <div class="bg-slate-100 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2">Khi AI ngày càng thông minh...</h3>
+                            <p class="text-slate-600">...và có thể làm được nhiều việc hơn con người, giá trị của chúng ta nằm ở đâu?</p>
+                        </div>
+                        <div class="bg-slate-100 p-6 rounded-lg">
+                            <h3 class="font-bold text-xl mb-2">Khi đối mặt vấn đề phức tạp...</h3>
+                            <p class="text-slate-600">...làm thế nào để suy nghĩ thật kỹ, phân tích rõ ràng và đưa ra quyết định sáng suốt?</p>
+                        </div>
+                    </div>
+                    <p class="mt-8 text-xl text-slate-700">Trong kỷ nguyên AI, **tư duy** chính là "siêu năng lực" của con người.</p>
+                </div>
+            </div>
+
+            <!-- Slide 3: Objectives -->
+            <div class="swiper-slide">
+                 <div class="slide-content">
+                    <h2 class="text-3xl font-bold text-center mb-10">Mục tiêu bài giảng</h2>
+                    <div class="grid md:grid-cols-2 gap-6 text-lg">
+                        <ul class="space-y-4 list-disc list-inside">
+                            <li>Hiểu rõ 4 loại tư duy: **Phản biện, Sáng tạo, Phân tích, Hệ thống.**</li>
+                            <li>Nhận biết sự tương quan và kết hợp giữa chúng.</li>
+                        </ul>
+                        <ul class="space-y-4 list-disc list-inside">
+                            <li>Thấy được tầm quan trọng của tư duy trong bối cảnh AI.</li>
+                            <li>Nắm bắt các phương pháp rèn luyện và ứng dụng hiệu quả.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SLIDE 4: Tư duy Phản biện - Khái niệm -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-12 items-center slide-content">
+                    <div>
+                        <span class="text-blue-500 font-semibold">TƯ DUY 01</span>
+                        <h2 class="slide-title mt-2 mb-6">Tư Duy Phản Biện</h2>
+                        <p class="text-xl text-slate-600 mb-6">Là khả năng phân tích, đánh giá thông tin một cách khách quan, logic, để đưa ra kết luận có căn cứ.</p>
+                        <div class="card">
+                             <h4 class="font-bold mb-2">Tóm tắt dễ nhớ:</h4>
+                             <p class="text-2xl font-bold text-blue-600">"Đừng tin ngay, hãy nghĩ kỹ!"</p>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?q=80&w=800&auto=format&fit=crop" 
+                         onerror="this.onerror=null;this.src='https://placehold.co/600x600/e0f2fe/3b82f6?text=Image+Not+Found';" 
+                         alt="Nhóm người đang thảo luận và phân tích dữ liệu trên màn hình" class="slide-img">
+                </div>
+            </div>
+
+            <!-- SLIDE 5: Tư duy Phản biện - Đặc điểm & Ví dụ -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-8 slide-content">
+                    <div class="card h-full flex flex-col">
+                        <h3 class="font-bold text-xl mb-4">Đặc điểm chính</h3>
+                        <ul class="space-y-3 list-disc list-inside text-left flex-grow">
+                            <li>Đặt câu hỏi "Tại sao?"</li>
+                            <li>Tìm kiếm bằng chứng, dữ liệu</li>
+                            <li>Nhận diện các giả định, định kiến</li>
+                            <li>Đánh giá độ tin cậy của nguồn tin</li>
+                        </ul>
+                    </div>
+                    <div class="card h-full flex flex-col">
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-xl mb-4">Ví dụ thực tế</h3>
+                            <p class="text-left mb-4">Đọc quảng cáo về một sản phẩm mới, bạn không tin ngay mà chủ động tìm review, so sánh thông số và giá cả từ nhiều nguồn khác nhau trước khi quyết định.</p>
+                            <h3 class="font-bold text-xl mb-4 mt-6">Liên hệ với AI</h3>
+                            <p class="text-left">AI có thể cung cấp thông tin sai lệch ("ảo giác"). Tư duy phản biện giúp bạn **"lọc"** và **kiểm chứng** thông tin, biến AI thành một trợ lý đáng tin cậy.</p>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <button class="gemini-btn generate-examples-btn" data-mindset="Tư duy Phản biện">Tạo thêm ví dụ ✨</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 6: Tư duy Sáng tạo - Khái niệm -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-12 items-center slide-content">
+                     <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop" 
+                          onerror="this.onerror=null;this.src='https://placehold.co/600x600/f3e8ff/8b5cf6?text=Image+Not+Found';"
+                          alt="Các sợi dây kết nối các ý tưởng với nhau" class="slide-img">
+                    <div class="text-right">
+                        <span class="text-purple-500 font-semibold">TƯ DUY 02</span>
+                        <h2 class="slide-title mt-2 mb-6">Tư Duy Sáng Tạo</h2>
+                        <p class="text-xl text-slate-600 mb-6">Là khả năng tạo ra những ý tưởng mới, độc đáo, và giải quyết vấn đề theo những cách khác biệt.</p>
+                        <div class="card">
+                             <h4 class="font-bold mb-2">Tóm tắt dễ nhớ:</h4>
+                             <p class="text-2xl font-bold text-purple-600">"Nghĩ khác đi, làm khác đi!"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 7: Tư duy Sáng tạo - Đặc điểm & Ví dụ -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-8 slide-content">
+                    <div class="card h-full flex flex-col">
+                        <h3 class="font-bold text-xl mb-4">Đặc điểm chính</h3>
+                        <ul class="space-y-3 list-disc list-inside text-left flex-grow">
+                            <li>Tò mò, ham học hỏi</li>
+                            <li>Thử nghiệm, chấp nhận rủi ro</li>
+                            <li>Kết hợp những điều không liên quan</li>
+                            <li>Nhìn vấn đề từ nhiều góc độ</li>
+                        </ul>
+                    </div>
+                     <div class="card h-full flex flex-col">
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-xl mb-4">Ví dụ thực tế</h3>
+                            <p class="text-left mb-4">Công ty gặp khó khăn trong việc thu hút khách hàng. Bạn đề xuất một chiến dịch marketing mới lạ trên TikTok, thay vì tiếp tục các phương pháp truyền thống.</p>
+                            <h3 class="font-bold text-xl mb-4 mt-6">Liên hệ với AI</h3>
+                            <p class="text-left">AI có thể giúp bạn "brainstorm" hàng trăm ý tưởng. Tư duy sáng tạo giúp bạn **chọn lọc, phát triển** và **kết hợp** chúng thành một giải pháp đột phá.</p>
+                        </div>
+                        <div class="mt-6 text-center">
+                             <button class="gemini-btn generate-examples-btn" data-mindset="Tư duy Sáng tạo">Tạo thêm ví dụ ✨</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+             <!-- SLIDE 8: Tư duy Phân tích - Khái niệm -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-12 items-center slide-content">
+                    <div>
+                        <span class="text-emerald-500 font-semibold">TƯ DUY 03</span>
+                        <h2 class="slide-title mt-2 mb-6">Tư Duy Phân Tích</h2>
+                        <p class="text-xl text-slate-600 mb-6">Là khả năng chia nhỏ một vấn đề phức tạp thành những phần nhỏ hơn, dễ quản lý hơn để hiểu rõ bản chất và tìm ra giải pháp.</p>
+                        <div class="card">
+                             <h4 class="font-bold mb-2">Tóm tắt dễ nhớ:</h4>
+                             <p class="text-2xl font-bold text-emerald-600">"Chia nhỏ để trị!"</p>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop" 
+                         onerror="this.onerror=null;this.src='https://placehold.co/600x600/d1fae5/10b981?text=Image+Not+Found';"
+                         alt="Các biểu đồ và đồ thị phân tích dữ liệu trên màn hình" class="slide-img">
+                </div>
+            </div>
+
+            <!-- SLIDE 9: Tư duy Phân tích - Đặc điểm & Ví dụ -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-8 slide-content">
+                    <div class="card h-full flex flex-col">
+                        <h3 class="font-bold text-xl mb-4">Đặc điểm chính</h3>
+                        <ul class="space-y-3 list-disc list-inside text-left flex-grow">
+                            <li>Thu thập thông tin chi tiết</li>
+                            <li>Phân loại, sắp xếp thông tin</li>
+                            <li>Xác định mối liên hệ nhân - quả</li>
+                            <li>Tìm ra nguyên nhân gốc rễ</li>
+                        </ul>
+                    </div>
+                     <div class="card h-full flex flex-col">
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-xl mb-4">Ví dụ thực tế</h3>
+                            <p class="text-left mb-4">Doanh số bán hàng giảm. Bạn không vội giảm giá, mà phân tích dữ liệu theo từng khu vực, từng dòng sản phẩm để tìm ra chính xác vấn đề nằm ở đâu.</p>
+                            <h3 class="font-bold text-xl mb-4 mt-6">Liên hệ với AI</h3>
+                            <p class="text-left">AI có thể xử lý lượng dữ liệu khổng lồ. Tư duy phân tích giúp bạn **đặt câu hỏi đúng** cho AI và **diễn giải kết quả** một cách ý nghĩa để ra quyết định.</p>
+                        </div>
+                        <div class="mt-6 text-center">
+                             <button class="gemini-btn generate-examples-btn" data-mindset="Tư duy Phân tích">Tạo thêm ví dụ ✨</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SLIDE 10: Tư duy Hệ thống - Khái niệm -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-12 items-center slide-content">
+                     <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=800&auto=format&fit=crop" 
+                          onerror="this.onerror=null;this.src='https://placehold.co/600x600/fff7ed/f97316?text=Image+Not+Found';"
+                          alt="Nhóm người đang thảo luận trên một sơ đồ quy trình phức tạp" class="slide-img">
+                    <div class="text-right">
+                        <span class="text-orange-500 font-semibold">TƯ DUY 04</span>
+                        <h2 class="slide-title mt-2 mb-6">Tư Duy Hệ Thống</h2>
+                        <p class="text-xl text-slate-600 mb-6">Là khả năng nhìn nhận vấn đề trong một tổng thể, thấy được sự liên kết và tương tác giữa các yếu tố.</p>
+                        <div class="card">
+                             <h4 class="font-bold mb-2">Tóm tắt dễ nhớ:</h4>
+                             <p class="text-2xl font-bold text-orange-600">"Nhìn toàn diện, nghĩ dài hạn!"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 11: Tư duy Hệ thống - Đặc điểm & Ví dụ -->
+            <div class="swiper-slide">
+                <div class="grid md:grid-cols-2 gap-8 slide-content">
+                    <div class="card h-full flex flex-col">
+                        <h3 class="font-bold text-xl mb-4">Đặc điểm chính</h3>
+                        <ul class="space-y-3 list-disc list-inside text-left flex-grow">
+                            <li>Nhìn nhận bức tranh toàn cảnh</li>
+                            <li>Hiểu được các mối quan hệ tương tác</li>
+                            <li>Dự đoán các tác động dây chuyền</li>
+                            <li>Tìm kiếm các giải pháp bền vững</li>
+                        </ul>
+                    </div>
+                     <div class="card h-full flex flex-col">
+                        <div class="flex-grow">
+                            <h3 class="font-bold text-xl mb-4">Ví dụ thực tế</h3>
+                            <p class="text-left mb-4">Để cải thiện hiệu quả làm việc của nhóm, bạn không chỉ yêu cầu mọi người làm nhanh hơn, mà còn xem xét lại quy trình làm việc, công cụ giao tiếp và cách phân chia công việc.</p>
+                            <h3 class="font-bold text-xl mb-4 mt-6">Liên hệ với AI</h3>
+                            <p class="text-left">AI có thể tối ưu một nhiệm vụ đơn lẻ. Tư duy hệ thống giúp bạn **tích hợp AI** vào toàn bộ quy trình để tạo ra hiệu quả tổng thể lớn nhất, tránh gây ra "nút thắt cổ chai" ở nơi khác.</p>
+                        </div>
+                         <div class="mt-6 text-center">
+                            <button class="gemini-btn generate-examples-btn" data-mindset="Tư duy Hệ thống">Tạo thêm ví dụ ✨</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 12: Interconnection -->
+            <div class="swiper-slide">
+                <div class="slide-content text-center">
+                    <h2 class="text-3xl font-bold mb-8">4 Tư Duy Không Tách Rời Mà Bổ Trợ Lẫn Nhau</h2>
+                    <p class="text-xl mb-10 text-slate-600">Hãy xem xét việc giải quyết vấn đề "ô nhiễm môi trường":</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-6 bg-blue-100 rounded-lg">
+                            <h4 class="font-bold text-blue-800">Phản biện</h4>
+                            <p>Đánh giá độ tin cậy của các báo cáo về nguyên nhân ô nhiễm.</p>
+                        </div>
+                        <div class="p-6 bg-purple-100 rounded-lg">
+                            <h4 class="font-bold text-purple-800">Sáng tạo</h4>
+                            <p>Đề xuất các vật liệu mới, dễ tái chế để thay thế nhựa.</p>
+                        </div>
+                        <div class="p-6 bg-emerald-100 rounded-lg">
+                            <h4 class="font-bold text-emerald-800">Phân tích</h4>
+                            <p>Phân tích nguồn gây ô nhiễm chính đến từ đâu (nhà máy, rác thải sinh hoạt...).</p>
+                        </div>
+                        <div class="p-6 bg-orange-100 rounded-lg">
+                            <h4 class="font-bold text-orange-800">Hệ thống</h4>
+                            <p>Hiểu rằng giải pháp cần sự chung tay của chính phủ, doanh nghiệp và người dân.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 13: Training Methods -->
+             <div class="swiper-slide">
+                <div class="slide-content">
+                    <h2 class="text-3xl font-bold text-center mb-10">Làm thế nào để rèn luyện?</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="card">
+                            <h3 class="font-bold text-lg mb-2 text-blue-600">Phản Biện</h3>
+                            <ul class="text-sm list-disc list-inside text-left">
+                                <li>Đặt câu hỏi 5 Whys.</li>
+                                <li>Đọc tin từ nhiều nguồn đối lập.</li>
+                                <li>Tham gia tranh luận.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="font-bold text-lg mb-2 text-purple-600">Sáng Tạo</h3>
+                             <ul class="text-sm list-disc list-inside text-left">
+                                <li>Thử một sở thích mới.</li>
+                                <li>Brainstorming ngược.</li>
+                                <li>Kết hợp 2 ý tưởng không liên quan.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                             <h3 class="font-bold text-lg mb-2 text-emerald-600">Phân Tích</h3>
+                             <ul class="text-sm list-disc list-inside text-left">
+                                <li>Chơi cờ, giải sudoku.</li>
+                                <li>Lập bảng so sánh ưu/nhược.</li>
+                                <li>Học cách đọc biểu đồ.</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3 class="font-bold text-lg mb-2 text-orange-600">Hệ Thống</h3>
+                             <ul class="text-sm list-disc list-inside text-left">
+                                <li>Vẽ sơ đồ tư duy (mindmap).</li>
+                                <li>Tìm hiểu về "hiệu ứng cánh bướm".</li>
+                                <li>Phân tích tác động của một quyết định.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 14: Conclusion -->
+            <div class="swiper-slide">
+                <div class="slide-content text-center">
+                    <h1 class="slide-title mb-4">Tư duy là <span class="gradient-text">"Siêu Năng Lực"</span> của bạn</h1>
+                    <p class="slide-subtitle max-w-4xl mx-auto">AI có thể tự động hóa công việc, nhưng tư duy phức tạp, khả năng thích ứng và đưa ra quyết định sáng suốt vẫn là của con người. Hãy làm chủ công nghệ, đừng để công nghệ làm chủ bạn.</p>
+                    <div class="mt-10">
+                        <h3 class="text-2xl font-bold">Bắt đầu hành trình rèn luyện của bạn ngay hôm nay!</h3>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+
+        <!-- Add Navigation -->
+        <div class="swiper-button-prev nav-button"></div>
+        <div class="swiper-button-next nav-button"></div>
+    </div>
+
+    <!-- Modal for Gemini Content -->
+    <div id="gemini-modal" class="modal-overlay">
+        <div class="modal-content relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 text-3xl font-bold">&times;</button>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        const swiper = new Swiper('.swiper-container', {
+            loop: false,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+                type: 'progressbar',
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            keyboard: {
+                enabled: true,
+                onlyInViewport: false,
+            },
+        });
+
+        // --- Gemini API Call Logic ---
+        async function getMoreExamples(mindsetTitle, apiKey) {
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = '<div class="loader"></div><p class="text-center text-slate-600">Đang tạo ví dụ, vui lòng chờ...</p>';
+            
+            const prompt = `Bạn là một người hướng dẫn giàu kinh nghiệm. Hãy tạo ra 2 ví dụ thực tế, ngắn gọn, và dễ hiểu bằng tiếng Việt về việc áp dụng "${mindsetTitle}". 
+            Mỗi ví dụ phải bắt đầu bằng một tiêu đề in đậm.
+            Ví dụ 1: Một ví dụ trong công việc.
+            Ví dụ 2: Một ví dụ trong đời sống cá nhân.
+            Yêu cầu định dạng đầu ra là HTML. Sử dụng thẻ <h4> cho tiêu đề ví dụ và <p> cho nội dung.`;
+            
+            if (!apiKey) {
+                 modalBody.innerHTML = `<p class="text-red-500 text-center">Vui lòng điền Google AI API Key của bạn ở đầu trang để sử dụng tính năng này.</p>`;
+                 return;
+            }
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API call failed: ${response.status}. Please check your API Key.`);
+                
+                const result = await response.json();
+                if (result.candidates && result.candidates[0].content.parts) {
+                    let generatedHtml = result.candidates[0].content.parts[0].text;
+                    // FIX: Clean up markdown fences from the API response
+                    if (generatedHtml.startsWith("```html")) {
+                        generatedHtml = generatedHtml.substring(7, generatedHtml.length - 3).trim();
+                    } else if (generatedHtml.startsWith("```")) {
+                        generatedHtml = generatedHtml.substring(3, generatedHtml.length - 3).trim();
+                    }
+                    modalBody.innerHTML = generatedHtml;
+                } else {
+                    throw new Error("Invalid response structure from API.");
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                modalBody.innerHTML = `<p class="text-red-500">Đã xảy ra lỗi khi tạo ví dụ. Vui lòng kiểm tra lại API Key và thử lại. (${error.message})</p>`;
+            }
+        }
+
+        // --- UI Logic for Modal and API Key ---
+        const modal = document.getElementById('gemini-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const exampleButtons = document.querySelectorAll('.generate-examples-btn');
+        const apiKeyInput = document.getElementById('api-key-input');
+
+        function openModal() {
+            modal.classList.add('visible');
+        }
+
+        function closeModal() {
+            modal.classList.remove('visible');
+            document.getElementById('modal-body').innerHTML = ''; // Clear content on close
+        }
+
+        exampleButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent Swiper from reacting
+                const mindset = e.target.dataset.mindset;
+                const userApiKey = apiKeyInput.value;
+                openModal();
+                getMoreExamples(mindset, userApiKey);
+            });
+        });
+
+        closeModalBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) { // Close if clicking on the overlay
+                closeModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
